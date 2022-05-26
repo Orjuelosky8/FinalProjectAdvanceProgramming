@@ -13,6 +13,7 @@ public class MenuAdmins implements Menus{
     public void showMenu() {
         char option;
         do {
+            System.out.println("* < A-bcd-E-fgh-I-jklmn-O-pqrst-U-vwxyZ > *");
             System.out.println("\t =======  Menu Administradores =====");
             System.out.println("\nQue desea hacer?");
             System.out.println("\t1. Gestionar Administradores");

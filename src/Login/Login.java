@@ -17,8 +17,9 @@ public class Login {
     public void asking_data() throws IOException {
         String username, password;
         char rol;
+        System.out.println("* < A-bcd-E-fgh-I-jklmn-O-pqrst-U-vwxyZ > *");
         System.out.println("\t--o--o-- LOGIN --o--o-- ");
-        System.out.println(" ** Inicia Sesion en Javestion ** ");
+        System.out.println(" ** Iniciar Sesion en Javestion ** ");
         System.out.print("\nDigita tu username: ");
         username = scanning.next();
         System.out.print("\nDigita tu contraseña: ");
@@ -89,7 +90,6 @@ public class Login {
         } catch (Exception e) {
             
         }
-        ois.close();
         return 'N';
     }
 

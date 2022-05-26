@@ -45,6 +45,18 @@ public class InfoCourses extends Estudiante{
                 System.out.print("Digite el numero de clase de la materia que desea inscribir: ");
                 n = scanning.nextInt();
                 // Busqueda de la clase en el archivo, aca voy xd
+                try {
+                    fis = new FileInputStream(FCourses);
+                    while (true) {
+                        ois = new ObjectInputStream(fis);
+                        course = (Courses)ois.readObject();
+                        if (course.getN_class() == n) {
+                            System.out.println("Clase encontrada.");
+                        }
+                    }
+                } catch (Exception e) {
+                    //TODO: handle exception
+                }
                 valid = true;
             } catch (Exception e) {
                 System.out.println("Solo digitar numeros.");

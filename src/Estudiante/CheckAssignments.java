@@ -1,8 +1,6 @@
 package Estudiante;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -123,6 +121,7 @@ public class CheckAssignments extends Estudiante{
     
     public void submitAssignment(){
         int aux=0; boolean valid= false; String subject="";
+        char auxc;
         System.out.println(" *** SUBIR ASIGNACION ***");
         System.out.println("A continuacion aparecera una lista de las materias que actualmente estas cursando, seleccione la materia de la cual es la asignacion que va a entregar: ");
         
@@ -198,7 +197,6 @@ public class CheckAssignments extends Estudiante{
             }
             try {
                 fis = new FileInputStream(FAsignments);
-                System.out.println("Buscando coincidencias...");
                 while (true) {
                     ois = new ObjectInputStream(fis);
                     assignment = (Assignments) ois.readObject();
@@ -215,13 +213,22 @@ public class CheckAssignments extends Estudiante{
                                         assignment.setCommentE(scanning.nextLine());
                                         assignment.setState("Entregada");
                                         assignment.setSubmittedDate(dtf.format(LocalDateTime.now()));
-                                        System.out.println("Todo Listo!, fecha de entrega establecida como ("+assignment.getSubmittedDate()+").\nDesea confirmar la entrega? (S/N):");
-                                        switch (scanning.nextLine().charAt(0)) {
-                                            case 'a':
-                                                
+                                        do {
+                                            System.out.print("Todo Listo!, fecha de entrega establecida como ("+assignment.getSubmittedDate()+").\nDesea confirmar la entrega? (S/N):");
+                                            auxc = scanning.nextLine().charAt(0);
+                                        } while (auxc != 'S' || auxc != 'N');
+                                        switch (auxc) {
+                                            case 'S':
+                                                System.out.println("Perfecto, asignacion entregada exitosamente");
+                                                break;
+                                            case 'N':
+                                                System.out.println("Okay, entrega cancelada.");
+                                                assignment.setCommentE("...");
+                                                assignment.setState("Por Entregar");
+                                                assignment.setSubmittedDate("Aun no entregada");
                                                 break;
                                         
-                                            default:
+                                            default: System.out.println("Impossible hehe");
                                                 break;
                                         }
                                         break;
@@ -235,9 +242,17 @@ public class CheckAssignments extends Estudiante{
                             }
                         }
                     }
+                    try {
+                        FileOutputStream fos = new FileOutputStream(FAsignments);
+                        ObjectOutputStream oos = new ObjectOutputStream(fos);
+                        oos.writeObject(assignment);
+                        oos.close();
+                    } catch (Exception e) {
+                        System.out.println("Error al guardar asignaciones, estamos trabajando para ver que paso");
+                    }
                 }
             } catch (Exception e) {
-                //TODO: handle exception
+                System.out.println("Redirigiendo al Menu Anterior...");
             }
         } else
             System.out.println("No encontramos asignaciones que tenga pendientes de esta materia...");

@@ -6,10 +6,10 @@ import java.util.ArrayList;
 public abstract class User implements Serializable {
     protected String username, password, name, lastName, email;
     protected long num;
-    protected short age;
+    protected int age;
     protected ArrayList<String>subjects;
 
-    public User(String username, String password, String name, String lastName, String email, long num, short age, ArrayList<String> subjects) {
+    public User(String username, String password, String name, String lastName, String email, long num, int age, ArrayList<String> subjects) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -20,7 +20,7 @@ public abstract class User implements Serializable {
         this.subjects = subjects;
     }
 
-    public User(String username, String password, String name, String lastName, String email, long num, short age) {
+    public User(String username, String password, String name, String lastName, String email, long num, int age) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -80,11 +80,11 @@ public abstract class User implements Serializable {
         this.num = num;
     }
 
-    public short getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(short age) {
+    public void setAge(int age) {
         this.age = age;
     }
 

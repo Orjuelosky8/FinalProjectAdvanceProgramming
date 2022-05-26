@@ -78,6 +78,12 @@ public class ManageStudents {
             System.out.print("Press Any Key To Continue...");
             sc.nextLine();
         }
+        try {
+            ois.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void add_student(){
@@ -107,6 +113,12 @@ public class ManageStudents {
             if (valid) {
                 System.out.println("Nombre de Usuario Disponible ;D");
                 newUser.setUsername(sc.nextLine());
+            }
+            try {
+                ois.close();
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         } while (!valid);
         System.out.print("Digite el nuevo usuario del nuevo estudiante: ");
@@ -161,6 +173,12 @@ public class ManageStudents {
                 System.out.println(" "+cont+". "+user.getUsername());
             }
         } catch (Exception e) {
+            try {
+                ois.close();
+                fis.close();
+            } catch (Exception e1) {
+                e1.getStackTrace();
+            }
             do {
                 System.out.print("Seleccione el numero del estudiante del que desea editar su informacion (0 para salir):");
                 aux = sc.nextInt();
@@ -228,6 +246,13 @@ public class ManageStudents {
             } catch (Exception e) {
                 System.out.println();
             }
+            try {
+                fis.close();
+                ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            /* Aqui va todo lo de cambios de archivos..., lo hago en 10 minutos mañana, que ya van a ser las 4 am xd */
         } else
             System.out.println("Operacion cancelada con exito.");
     }
@@ -249,7 +274,19 @@ public class ManageStudents {
                     found = true;
                 }
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            try {
+                fis.close();
+                ois.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+        try {
+            fis.close();
+        } catch (IOException e3) {
+            e3.printStackTrace();
+        }
 
         if(found){
             FileInputStream fis2 = null;
@@ -279,12 +316,21 @@ public class ManageStudents {
                     } catch (Exception e) {
                         System.out.println("Ocurrio algun error.");
                     }
+                    ois.close();
                 }
             } catch (Exception e) {
-                System.out.println("Estudiante Eliminado de Manera Satisfactoria.");
-                System.out.print("Press Any Key To Continue...");
-                sc.nextLine();
             }
+            try {
+                fis2.close();
+                ois2.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            /* espacio para rotacion de archivos */
+            
+            System.out.println("Estudiante Eliminado de Manera Satisfactoria.");
+            System.out.print("Press Any Key To Continue...");
+            sc.nextLine();
         }
     }
 }
