@@ -14,8 +14,8 @@ public class ManageProfessors{
     public void showMenu(){
         char option;
         do {
-            System.out.print("\033[H\033[2J"); 
-            System.out.flush();
+            //System.out.print("\033[H\033[2J"); 
+            //System.out.flush();
             System.out.println("\n\n-------- GESTIONAR PROFESORES --------");
             System.out.println("\t1. Ver lista actual de Profesores");
             System.out.println("\t2. Agregar Profesor");
@@ -70,16 +70,16 @@ public class ManageProfessors{
                 System.out.println("\tEdad: "+user.getAge());
                 System.out.println("\tMaterias que dictas: ");
                 for (int i = 0; i < user.getSubjects().size(); i++)
-                    System.out.println("\t"+i+1 + ". " + user.getSubjects().get(i));
+                    System.out.println("\t"+(i+1) + ". " + user.getSubjects().get(i));
                 System.out.println("----------------------------------------");
             }
         } catch (Exception e) {
             System.out.println("(ESTA FUE LA LISTA DE TODOS LOS PROFESORES)");
             System.out.print("Press Any Key To Continue...");
             sc.nextLine();
+            sc.nextLine();
         }
         try {
-            ois.close();
             fis.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,6 +89,7 @@ public class ManageProfessors{
     private void add_professor(){
         boolean valid=true; String aux; int n=0;
         ArrayList<String> subjects = new ArrayList<String>();
+        sc.nextLine();
         User newUser = new Profesor();
         do {
             System.out.print("Digite el nuevo usuario del nuevo profesor: ");
@@ -112,16 +113,17 @@ public class ManageProfessors{
             }
             if (valid) {
                 System.out.println("Nombre de Usuario Disponible ;D");
-                newUser.setUsername(sc.nextLine());
+                newUser.setUsername(aux);
             }
             try {
-                ois.close();
-                fis.close();
+                if (fis!=null) {
+                    fis.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } while (!valid);
-        System.out.print("Digite el nuevo usuario del nuevo profesor: ");
+        System.out.print("Digite la nueva contraseña del nuevo profesor: ");
         newUser.setPassword(sc.nextLine());
         System.out.print("Digite el nombre del nuevo profesor: ");
         newUser.setName(sc.nextLine());
@@ -143,8 +145,9 @@ public class ManageProfessors{
                 valid = false;
             }
         } while (!valid);
+        sc.nextLine();
         for (int i = 0; i < n; i++) {
-            System.out.print("Digite el nombre de la materia #"+i+1+" que dicta: ");
+            System.out.print("Digite el nombre de la materia #"+(i+1)+" que dicta: ");
             subjects.add(sc.nextLine());
         }
         newUser.setSubjects(subjects);
@@ -159,8 +162,9 @@ public class ManageProfessors{
     }
 
     private void edit_professor(){
+        File FP2 = new File("./Files/Teachers2.obj");
         int cont=0, aux; char opt;
-        System.out.println("A continuacion podra apreciar una lista ordenada de el username de todos los profesores para que puedas saber la informacion de cual deseas editar");
+        System.out.println("A continuacion podra apreciar una lista ordenada de el username de todos los profesores para que puedas saber la informacion de cual deseas editar: ");
         FileInputStream fis = null;
         ObjectInputStream ois = null;
         User user;
@@ -185,7 +189,8 @@ public class ManageProfessors{
                 aux = sc.nextInt();
             } while (aux > cont || aux < 0);
         }
-
+        cont=0;
+        sc.nextLine();
         if (aux != 0) {
             try {
                 fis = new FileInputStream(FP);
@@ -237,7 +242,7 @@ public class ManageProfessors{
                         }
                     }
                     try {
-                        FileOutputStream fos = new FileOutputStream(FP, true);
+                        FileOutputStream fos = new FileOutputStream(FP2, true);
                         ObjectOutputStream oos = new ObjectOutputStream(fos);
                         oos.writeObject(editted);
                         oos.close();
@@ -256,12 +261,20 @@ public class ManageProfessors{
             }
 
             /* Aqui va todo lo de cambios de archivos..., lo hago en 10 minutos mañana, que ya van a ser las 4 am xd */
+            FP.delete();
+            //sc.nextLine();
+            boolean success = FP2.renameTo(FP);
+            System.out.println(success);
+            //sc.nextLine();
+            FP2.delete();
         } else
             System.out.println("Operacion cancelada con exito.");
     }
     
     private void delete_professor(){
+        File FP2 = new File("./Files/Teachers2.obj");
         String aux; boolean found = false;
+        sc.nextLine();
         System.out.print("Digite el Username de el Admin que desea Eliminar: ");
         aux = sc.nextLine();
         FileInputStream fis = null;
@@ -312,7 +325,7 @@ public class ManageProfessors{
                         saveUser.setSubjects(user2.getSubjects());
                     }
                     try {
-                        FileOutputStream fos = new FileOutputStream(FP, true);
+                        FileOutputStream fos = new FileOutputStream(FP2, true);
                         ObjectOutputStream oos = new ObjectOutputStream(fos);
                         oos.writeObject(saveUser);
                         oos.close();
@@ -329,9 +342,17 @@ public class ManageProfessors{
                 e1.printStackTrace();
             }
             /* espacio para rotacion de archivos */
+            new File("./Files/Admins.obj").delete();
+            //sc.nextLine();
+            boolean success = new File("./Files/Admins2.obj").renameTo(new File("./Files/Admins.obj"));
+            System.out.println(success);
+            //sc.nextLine();
+            new File("./Files/Admins2.obj").delete();
+
             System.out.println("Usuario Eliminado de Manera SatisFPctoria.");
             System.out.print("Press Any Key To Continue...");
             sc.nextLine();
-        }
+        } else
+            System.out.println("Usuario no encontrado.");
     }
 }

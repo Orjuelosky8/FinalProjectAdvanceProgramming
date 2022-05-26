@@ -14,6 +14,7 @@ public class MenuAdmins implements Menus{
         char option;
         do {
             System.out.println("* < A-bcd-E-fgh-I-jklmn-O-pqrst-U-vwxyZ > *");
+            System.out.println(":a:b:c:d:e:f:g:h:i:j:k:l");
             System.out.println("\t =======  Menu Administradores =====");
             System.out.println("\nQue desea hacer?");
             System.out.println("\t1. Gestionar Administradores");
@@ -38,10 +39,10 @@ public class MenuAdmins implements Menus{
                 new ManageAdmins().showMenu();
                 break;
             case '2':
-                new ManageStudents().showMenu();
+                new ManageProfessors().showMenu();
                 break;
             case '3':
-                new ManageProfessors().showMenu();
+            new ManageStudents().showMenu();
                 break;
             case '4':
                 new ManageCourses().showMenu();

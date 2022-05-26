@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.security.auth.Subject;
+
 import Estudiante.Estudiante;
 import Login.User;
 
@@ -14,8 +16,8 @@ public class ManageStudents {
     public void showMenu(){
         char option;
         do {
-            System.out.print("\033[H\033[2J"); 
-            System.out.flush(); 
+            //System.out.print("\033[H\033[2J"); 
+            //System.out.flush(); 
             System.out.println("\n\n-------- GESTIONAR ESTUDIANTES --------");
             System.out.println("\t1. Ver lista actual de Estudiantes");
             System.out.println("\t2. Agregar Estudiante");
@@ -57,8 +59,8 @@ public class ManageStudents {
         ObjectInputStream ois = null;
         User user;
         try {
-            fis = new FileInputStream(FS);
-            while(true){ //holi xd, helloooo no. NO. somos muy lindos con ojeras, TOTAAALLL, siempre somos re lindos, SI GREO
+            fis = new FileInputStream("./Files/Students.obj");
+            do{ //holi xd, helloooo no. NO. somos muy lindos con ojeras, TOTAAALLL, siempre somos re lindos, SI GREO
                 ois = new ObjectInputStream(fis);
                 cont += 1;
                 user = (User) ois.readObject();
@@ -69,17 +71,19 @@ public class ManageStudents {
                 System.out.println("\tNumero Telefonico: "+user.getNum()); 
                 System.out.println("\tEdad: "+user.getAge());
                 System.out.println("\tMaterias que estas cursando: ");
-                for (int i = 0; i < user.getSubjects().size(); i++)
-                    System.out.println("\t"+i+1 + ". " + user.getSubjects().get(i));
+                for (String x : user.getSubjects()) {
+                    System.out.println("\t"+x);
+                }
+                // for (int i = 0; i <= user.getSubjects().size(); i++)
+                //     System.out.println("\t"+(i+1) + ". " + user.getSubjects().get(i));
                 System.out.println("----------------------------------------");
-            }
+            }while(user != null);
         } catch (Exception e) {
             System.out.println("(ESTA FUE LA LISTA DE TODOS LOS ESTUDIANTES)");
             System.out.print("Press Any Key To Continue...");
             sc.nextLine();
         }
         try {
-            ois.close();
             fis.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,6 +94,7 @@ public class ManageStudents {
         boolean valid=true; String aux; int n=0;
         ArrayList<String> subjects = new ArrayList<String>();
         User newUser = new Estudiante();
+        sc.nextLine();
         do {
             System.out.print("Digite el nuevo usuario del nuevo estudiante: ");
             aux = sc.nextLine();
@@ -112,16 +117,17 @@ public class ManageStudents {
             }
             if (valid) {
                 System.out.println("Nombre de Usuario Disponible ;D");
-                newUser.setUsername(sc.nextLine());
+                newUser.setUsername(aux);
             }
             try {
-                ois.close();
-                fis.close();
+                if (fis != null) {
+                    fis.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } while (!valid);
-        System.out.print("Digite el nuevo usuario del nuevo estudiante: ");
+        System.out.print("Digite la nueva contraseña del nuevo estudiante: ");
         newUser.setPassword(sc.nextLine());
         System.out.print("Digite el nombre del nuevo estudiante: ");
         newUser.setName(sc.nextLine());
@@ -143,10 +149,12 @@ public class ManageStudents {
                 valid = false;
             }
         } while (!valid);
+        sc.nextLine();
         for (int i = 0; i < n; i++) {
-            System.out.print("Digite el nombre de la materia #"+i+1+" que cursa: ");
+            System.out.print("Digite el nombre de la materia #"+(i+1)+" que cursa: ");
             subjects.add(sc.nextLine());
         }
+        newUser.setSubjects(subjects);
         try {
             FileOutputStream fos = new FileOutputStream(FS, true);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -158,6 +166,7 @@ public class ManageStudents {
     }
 
     private void edit_student(){
+        File FS2 = new File("./Files/Students2.obj");
         int cont=0, aux; char opt;
         System.out.println("A continuacion podra apreciar una lista ordenada de el username de todos los estudiantes para que puedas saber la informacion de cual deseas editar");
         FileInputStream fis = null;
@@ -184,7 +193,8 @@ public class ManageStudents {
                 aux = sc.nextInt();
             } while (aux > cont || aux < 0);
         }
-
+        cont=0;
+        sc.nextLine();
         if (aux != 0) {
             try {
                 fis = new FileInputStream(FS);
@@ -233,14 +243,14 @@ public class ManageStudents {
                                 System.out.println("Operacion cancelada de manera exitosa.");
                                 break;
                         }
-                    }
-                    try {
-                        FileOutputStream fos = new FileOutputStream(FS, true);
-                        ObjectOutputStream oos = new ObjectOutputStream(fos);
-                        oos.writeObject(editted);
-                        oos.close();
-                    } catch (Exception e) {
-                        System.out.println("Ocurrio un fallo al guardar.");
+                        try {
+                            FileOutputStream fos = new FileOutputStream(FS2, true);
+                            ObjectOutputStream oos = new ObjectOutputStream(fos);
+                            oos.writeObject(editted);
+                            oos.close();
+                        } catch (Exception e) {
+                            System.out.println("Ocurrio un fallo al guardar.");
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -253,12 +263,20 @@ public class ManageStudents {
                 e.printStackTrace();
             }
             /* Aqui va todo lo de cambios de archivos..., lo hago en 10 minutos mañana, que ya van a ser las 4 am xd */
+            FS.delete();
+            //sc.nextLine();
+            boolean success = FS2.renameTo(FS);
+            System.out.println(success);
+            //sc.nextLine();
+            FS2.delete();
         } else
             System.out.println("Operacion cancelada con exito.");
     }
     
     private void delete_student(){
+        File FS2 = new File("./Files/Students2.obj");
         String aux; boolean found = false;
+        sc.nextLine();
         System.out.print("Digite el Username de el Estudiante que desea Eliminar: ");
         aux = sc.nextLine();
         FileInputStream fis = null;
@@ -309,7 +327,7 @@ public class ManageStudents {
                         saveUser.setSubjects(user2.getSubjects());
                     }
                     try {
-                        FileOutputStream fos = new FileOutputStream(FS, true);
+                        FileOutputStream fos = new FileOutputStream(FS2, true);
                         ObjectOutputStream oos = new ObjectOutputStream(fos);
                         oos.writeObject(saveUser);
                         oos.close();
@@ -327,6 +345,12 @@ public class ManageStudents {
                 e1.printStackTrace();
             }
             /* espacio para rotacion de archivos */
+            new File("./Files/Students.obj").delete();
+            //sc.nextLine();
+            boolean success = new File("./Files/Students2.obj").renameTo(new File("./Files/Students.obj"));
+            System.out.println(success);
+            //sc.nextLine();
+            new File("./Files/Students2.obj").delete();
             
             System.out.println("Estudiante Eliminado de Manera Satisfactoria.");
             System.out.print("Press Any Key To Continue...");

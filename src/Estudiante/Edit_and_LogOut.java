@@ -43,7 +43,7 @@ public class Edit_and_LogOut extends Estudiante{
     }
 
     public void logout(){
-        System.out.println("Hasta Luego Estudiante @"+super.name+" "+super.lastName+"!");
+        System.out.println("Hasta Luego Estudiante!");
         System.out.println("Sesion Cerrada de Manera Exitosa ;D");
     }
 }

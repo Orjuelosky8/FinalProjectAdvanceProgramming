@@ -7,12 +7,12 @@ import Data.Courses;
 
 public class ManageCourses {
     Scanner sc = new Scanner(System.in);
-    File FCourses = new File("./Data/Courses.java");
+    File FCourses = new File("./Files/Courses.obj");
     public void showMenu(){
         char option;
         do {
-            System.out.print("\033[H\033[2J"); 
-            System.out.flush(); 
+            //System.out.print("\033[H\033[2J"); 
+            //System.out.flush(); 
             System.out.println("\n\n-------- GESTIONAR CURSOS --------");
             System.out.println("\t1. Ver lista actual de Cursos");
             System.out.println("\t2. Agregar Curso");
@@ -66,7 +66,6 @@ public class ManageCourses {
                 System.out.println("\tNumero de Creditos: "+course.getN_credits()); 
                 System.out.println("\tCupos Totales: "+course.getN_cupos());
                 System.out.println("----------------------------------------");
-                ois.close();
             }
         } catch (Exception e) {
             System.out.println("(ESTA FUE LA LISTA DE TODOS LOS CURSOS DISPONIBLES)");
@@ -84,6 +83,7 @@ public class ManageCourses {
     private void add_course(){
         boolean valid=true; int aux;
         Courses newcourse = new Courses();
+        sc.nextLine();
         System.out.print("Digite el nombre del nuevo curso: ");
         newcourse.setName(sc.nextLine());
         do {
@@ -112,15 +112,15 @@ public class ManageCourses {
                     newcourse.setN_class(aux);
                 }
                 try {
-                    ois.close();
                     fis.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } catch (Exception e) {
-                System.out.println("ERROR... "+e+"\nIntentelo de nuevo.");
+                System.out.println(/*"ERROR... "+e+"\nIntentelo de nuevo."*/);
             }
         } while (!valid);
+        sc.nextLine();
         System.out.print("Digite la descripcion del nuevo curso: ");
         newcourse.setDescription(sc.nextLine());
         do {
@@ -146,7 +146,9 @@ public class ManageCourses {
     }
 
     private void edit_course(){
+        File FCourses2 = new File("./Files/Courses2.obj");
         int cont=0, aux; char opt;
+        sc.nextLine();
         System.out.println("A continuacion podra apreciar una lista ordenada de el nombre de curso de todas las materias para que puedas saber la informacion de cual deseas editar");
         FileInputStream fis = null;
         ObjectInputStream ois = null;
@@ -172,7 +174,7 @@ public class ManageCourses {
                 aux = sc.nextInt();
             } while (aux > cont || aux < 0);
         }
-
+        cont = 0;
         if (aux != 0) {
             try {
                 fis = new FileInputStream(FCourses);
@@ -192,6 +194,7 @@ public class ManageCourses {
                         System.out.println("3. Numero de creditos actual - "+course.getN_credits());
                         System.out.println("4. Numero de cupos totales actual - "+course.getN_cupos());
                         System.out.println("0. Cancelar");
+                        sc.nextLine();
                         do {
                             System.out.print("Digite su opcion: ");
                             opt = sc.nextLine().charAt(0);
@@ -220,7 +223,7 @@ public class ManageCourses {
                         }
                     }
                     try {
-                        FileOutputStream fos = new FileOutputStream(FCourses, true);
+                        FileOutputStream fos = new FileOutputStream(FCourses2, true);
                         ObjectOutputStream oos = new ObjectOutputStream(fos);
                         oos.writeObject(editted);
                         oos.close();
@@ -238,13 +241,22 @@ public class ManageCourses {
                 e.printStackTrace();
             }
 
+            FCourses.delete();
+            //sc.nextLine();
+            boolean success = FCourses2.renameTo(FCourses);
+            System.out.println(success);
+            //sc.nextLine();
+            FCourses2.delete();
+
             /* Aqui va todo lo de cambios de archivos..., lo hago en 10 minutos mañana, que ya van a ser las 4 am xd */
         } else
             System.out.println("Operacion cancelada con exito.");
     }
     
     private void delete_course(){
+        File FCourses2 = new File("./Files/Courses2.obj");
         int aux; boolean found = false;
+        sc.nextLine();
         System.out.print("Digite el numero de clase del curso que desea Eliminar: ");
         aux = sc.nextInt();
         FileInputStream fis = null;
@@ -290,14 +302,14 @@ public class ManageCourses {
                         savecourse.setN_class(course2.getN_class());
                         savecourse.setN_credits(course2.getN_credits());
                         savecourse.setN_cupos(course2.getN_cupos());
-                    }
-                    try {
-                        FileOutputStream fos = new FileOutputStream(FCourses, true);
-                        ObjectOutputStream oos = new ObjectOutputStream(fos);
-                        oos.writeObject(savecourse);
-                        oos.close();
-                    } catch (Exception e) {
-                        System.out.println("Ocurrio algun error.");
+                        try {
+                            FileOutputStream fos = new FileOutputStream(FCourses2, true);
+                            ObjectOutputStream oos = new ObjectOutputStream(fos);
+                            oos.writeObject(savecourse);
+                            oos.close();
+                        } catch (Exception e) {
+                            System.out.println("Ocurrio algun error.");
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -309,8 +321,14 @@ public class ManageCourses {
                 e1.printStackTrace();
             }
             /* espacio para rotacion de archivos */
+            new File("./Files/Courses.obj").delete();
+            //sc.nextLine();
+            boolean success = new File("./Files/Courses2.obj").renameTo(new File("./Files/Courses.obj"));
+            System.out.println(success);
+            //sc.nextLine();
+            new File("./Files/Courses2.obj").delete();
 
-            System.out.println("Usuario Eliminado de Manera SatisFCoursesctoria.");
+            System.out.println("Curso Eliminado de Manera Satisfactoria.");
             System.out.print("Press Any Key To Continue...");
             sc.nextLine();
         }
